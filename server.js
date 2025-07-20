@@ -37,7 +37,8 @@ app.post('/api/send-email', async (req, res) => {
   // Email to User
   const userMailOptions = {
     from: `Shwetal Talavdekar <${process.env.EMAIL_USER}>`,
-    to: email,
+    to: email, // 👈 User receives this email
+    cc: process.env.EMAIL_USER, // 👈 Admin gets CC'd
     subject: `Thanks for contacting me, ${name}!`,
     text: `Hi ${name}, 👋\n\nThanks for reaching out through my portfolio website!\n\nHere's a summary of your submission:\n\n📌 Subject: ${subject}\n📝 Message: ${message}\n📧 Email: ${email}\n${deviceInfoText}\n\nI'll get back to you shortly.  \nHave a great day! 😊\n\nWarm regards,  \nShwetal Talavdekar  \n📬 shwetalt856@gmail.com  \n🔗 https://github.com/Shwetal1805200  \n🔗 https://linkedin.com/in/shwetal-talavdekar-a1354b139`
   };
@@ -70,8 +71,9 @@ app.post('/api/chat', async (req, res) => {
         model: 'mistralai/mistral-7b-instruct',
         messages: [
           {
-  role: 'system',
-  content: `You are a friendly and helpful AI chatbot integrated into the personal portfolio of Shwetal Talavdekar.
+            role: 'system',
+            content: `You are a friendly and helpful AI chatbot integrated into the personal portfolio of Shwetal Talavdekar.
+  Keep your answers short and relevant (max 30-40 words).
 
 🧑‍💻 About the Developer:
 - Shwetal Talavdekar is a passionate and versatile Full Stack Developer based in Navi Mumbai, India.
@@ -119,8 +121,8 @@ app.post('/api/chat', async (req, res) => {
 - If they ask general programming or tech questions, answer as a friendly assistant.
 - Never invent details not provided in this context.
 - Keep your tone helpful, respectful, and professional.`
-}
-,
+          }
+          ,
           {
             role: 'user',
             content: message
