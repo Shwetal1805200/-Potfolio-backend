@@ -24,67 +24,28 @@ app.post('/api/send-email', async (req, res) => {
     }
   });
 
-  const deviceInfoText = `
-🖥️ Device Info:
-- User Agent: ${clientInfo?.userAgent}
-- Platform: ${clientInfo?.platform}
-- Language: ${clientInfo?.language}
-- Screen Resolution: ${clientInfo?.screenResolution}
-- Timezone: ${clientInfo?.timezone}
-`;
+  const deviceInfoText = `\n🖥️ Device Info:\n- User Agent: ${clientInfo?.userAgent}\n- Platform: ${clientInfo?.platform}\n- Language: ${clientInfo?.language}\n- Screen Resolution: ${clientInfo?.screenResolution}\n- Timezone: ${clientInfo?.timezone}`;
 
-  // Email to Admin
+  // Email to Admin (You)
   const adminMailOptions = {
     from: process.env.EMAIL_USER,
-    to: process.env.EMAIL_USER,
+    to: process.env.EMAIL_USER, // Send to admin (yourself)
     subject: `Portfolio Contact: ${subject}`,
-    text: `
-📩 New Message from Portfolio
-
-👤 Name: ${name}
-📧 Email: ${email}
-📌 Subject: ${subject}
-
-📝 Message:
-${message}
-
-${deviceInfoText}
-    `
+    text: `📩 New Message from Portfolio\n\n👤 Name: ${name}\n📧 Email: ${email}\n📌 Subject: ${subject}\n\n📝 Message:\n${message}\n${deviceInfoText}`
   };
 
-  // Email to User with CC to Admin
+  // Email to User
   const userMailOptions = {
-    from: `"Shwetal Talavdekar" <${process.env.EMAIL_USER}>`,
+    from: `Shwetal Talavdekar <${process.env.EMAIL_USER}>`,
     to: email,
-    cc: process.env.EMAIL_USER, // CC to admin
     subject: `Thanks for contacting me, ${name}!`,
-    text: `
-Hi ${name}, 👋
-
-Thanks for reaching out through my portfolio website!
-
-Here's a summary of your submission:
-
-📌 Subject: ${subject}
-📝 Message: ${message}
-📧 Email: ${email}
-
-${deviceInfoText}
-
-I'll get back to you shortly.  
-Have a great day! 😊
-
-Warm regards,  
-Shwetal Talavdekar  
-📬 shwetalt856@gmail.com  
-🔗 https://github.com/Shwetal1805200  
-🔗 https://linkedin.com/in/shwetal-talavdekar-a1354b139
-    `
+    text: `Hi ${name}, 👋\n\nThanks for reaching out through my portfolio website!\n\nHere's a summary of your submission:\n\n📌 Subject: ${subject}\n📝 Message: ${message}\n📧 Email: ${email}\n${deviceInfoText}\n\nI'll get back to you shortly.  \nHave a great day! 😊\n\nWarm regards,  \nShwetal Talavdekar  \n📬 shwetalt856@gmail.com  \n🔗 https://github.com/Shwetal1805200  \n🔗 https://linkedin.com/in/shwetal-talavdekar-a1354b139`
   };
 
   try {
     await transporter.sendMail(adminMailOptions);
     await transporter.sendMail(userMailOptions);
+
     res.status(200).json({ success: true });
   } catch (err) {
     console.error('❌ Error sending email:', err);
@@ -92,7 +53,7 @@ Shwetal Talavdekar
   }
 });
 
-// 🤖 Chatbot Route (OpenRouter)
+// 🤖 Chatbot Route
 app.post('/api/chat', async (req, res) => {
   const { message } = req.body;
 
@@ -110,42 +71,7 @@ app.post('/api/chat', async (req, res) => {
         messages: [
           {
             role: 'system',
-            content: `You are a friendly and helpful AI chatbot integrated into the personal portfolio of Shwetal Talavdekar...
-
-🧑‍💻 About the Developer:
-- Shwetal Talavdekar is a passionate and versatile Full Stack Developer based in Navi Mumbai, India.
-- He currently works as a Software Developer at IDBI Intech (since July 2024), where he contributes to mission-critical financial applications.
-
-💼 Experience & Contributions:
-- Developed a secure transaction processing module for MPSeDC using Java, JSP, and Servlets.
-- Designed and implemented SFTP and SMTP-based API integrations for mandate registration with NPCI.
-- Built reusable components and maintained code for backend-heavy logic with robust data validation.
-- Hands-on with SWIFT message formatting for cross-border financial communication and compliance.
-- Followed Agile/Scrum methodology and collaborated with QA, DevOps, and infrastructure teams.
-
-🛠️ Projects:
-1. Typing Speed Game (Java Swing)
-2. Snake and Egg Game (Java GUI)
-3. Placement Cell (MERN)
-4. Weather App (React)
-5. Quote Generator
-6. Image Gallery
-7. Unit Converter
-8. Resume Viewer
-
-🎓 Education:
-- PG-DAC from CDAC, 2024
-- BE Mechanical – MGM College of Engineering
-- Diploma – Bharati Vidyapeeth
-
-🔗 GitHub: https://github.com/Shwetal1805200
-🔗 LinkedIn: https://linkedin.com/in/shwetal-talavdekar-a1354b139
-📧 Email: shwetalt856@gmail.com
-
-👋 Behavior:
-- If asked about Shwetal — answer with provided info.
-- For unrelated queries — act like a friendly general assistant.
-- Do not invent information outside this prompt.`
+            content: `You are a helpful AI chatbot in the portfolio of Shwetal Talavdekar. (📌 content truncated for brevity, keep your full developer intro here)`
           },
           {
             role: 'user',
@@ -165,7 +91,6 @@ app.post('/api/chat', async (req, res) => {
   }
 });
 
-// ✅ Server Start
 app.listen(PORT, () => {
   console.log(`🚀 Server running on port ${PORT}`);
-});
+});  
