@@ -35,7 +35,7 @@ app.post('/api/send-email', async (req, res) => {
 
   // Email to Admin (You)
   const adminMailOptions = {
-    from: email,
+    from: process.env.EMAIL_USER,
     to: process.env.EMAIL_USER,
     subject: `Portfolio Contact: ${subject}`,
     text: `
@@ -52,10 +52,11 @@ ${deviceInfoText}
     `
   };
 
-  // Email to User
+  // Email to User (with admin in CC)
   const userMailOptions = {
     from: `"Shwetal Talavdekar" <${process.env.EMAIL_USER}>`,
     to: email,
+    cc: process.env.EMAIL_USER,  // ✅ CC the admin
     subject: `Thanks for contacting me, ${name}!`,
     text: `
 Hi ${name}, 👋
