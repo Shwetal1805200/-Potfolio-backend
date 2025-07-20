@@ -33,7 +33,7 @@ app.post('/api/send-email', async (req, res) => {
 - Timezone: ${clientInfo?.timezone}
 `;
 
-  // Email to Admin (You)
+  // Email to Admin
   const adminMailOptions = {
     from: process.env.EMAIL_USER,
     to: process.env.EMAIL_USER,
@@ -52,11 +52,11 @@ ${deviceInfoText}
     `
   };
 
-  // Email to User (with admin in CC)
+  // Email to User with CC to Admin
   const userMailOptions = {
     from: `"Shwetal Talavdekar" <${process.env.EMAIL_USER}>`,
     to: email,
-    cc: process.env.EMAIL_USER,  // ✅ CC the admin
+    cc: process.env.EMAIL_USER, // CC to admin
     subject: `Thanks for contacting me, ${name}!`,
     text: `
 Hi ${name}, 👋
@@ -85,7 +85,6 @@ Shwetal Talavdekar
   try {
     await transporter.sendMail(adminMailOptions);
     await transporter.sendMail(userMailOptions);
-
     res.status(200).json({ success: true });
   } catch (err) {
     console.error('❌ Error sending email:', err);
@@ -93,7 +92,7 @@ Shwetal Talavdekar
   }
 });
 
-// 🤖 Chatbot Route
+// 🤖 Chatbot Route (OpenRouter)
 app.post('/api/chat', async (req, res) => {
   const { message } = req.body;
 
@@ -103,7 +102,7 @@ app.post('/api/chat', async (req, res) => {
       headers: {
         'Authorization': `Bearer ${process.env.OPENROUTER_API_KEY}`,
         'Content-Type': 'application/json',
-        'HTTP-Referer': 'https://your-portfolio-domain.com',
+        'HTTP-Referer': 'https://shwetal-t.netlify.app/',
         'X-Title': 'ShwetalPortfolioAI'
       },
       body: JSON.stringify({
@@ -111,10 +110,42 @@ app.post('/api/chat', async (req, res) => {
         messages: [
           {
             role: 'system',
-            content: `You are a helpful AI chatbot in the portfolio of Shwetal Talavdekar...
+            content: `You are a friendly and helpful AI chatbot integrated into the personal portfolio of Shwetal Talavdekar...
 
-(📌 content truncated for brevity, keep your full developer intro here)
-            `
+🧑‍💻 About the Developer:
+- Shwetal Talavdekar is a passionate and versatile Full Stack Developer based in Navi Mumbai, India.
+- He currently works as a Software Developer at IDBI Intech (since July 2024), where he contributes to mission-critical financial applications.
+
+💼 Experience & Contributions:
+- Developed a secure transaction processing module for MPSeDC using Java, JSP, and Servlets.
+- Designed and implemented SFTP and SMTP-based API integrations for mandate registration with NPCI.
+- Built reusable components and maintained code for backend-heavy logic with robust data validation.
+- Hands-on with SWIFT message formatting for cross-border financial communication and compliance.
+- Followed Agile/Scrum methodology and collaborated with QA, DevOps, and infrastructure teams.
+
+🛠️ Projects:
+1. Typing Speed Game (Java Swing)
+2. Snake and Egg Game (Java GUI)
+3. Placement Cell (MERN)
+4. Weather App (React)
+5. Quote Generator
+6. Image Gallery
+7. Unit Converter
+8. Resume Viewer
+
+🎓 Education:
+- PG-DAC from CDAC, 2024
+- BE Mechanical – MGM College of Engineering
+- Diploma – Bharati Vidyapeeth
+
+🔗 GitHub: https://github.com/Shwetal1805200
+🔗 LinkedIn: https://linkedin.com/in/shwetal-talavdekar-a1354b139
+📧 Email: shwetalt856@gmail.com
+
+👋 Behavior:
+- If asked about Shwetal — answer with provided info.
+- For unrelated queries — act like a friendly general assistant.
+- Do not invent information outside this prompt.`
           },
           {
             role: 'user',
@@ -134,6 +165,7 @@ app.post('/api/chat', async (req, res) => {
   }
 });
 
+// ✅ Server Start
 app.listen(PORT, () => {
   console.log(`🚀 Server running on port ${PORT}`);
 });
