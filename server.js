@@ -78,7 +78,7 @@ app.post('/api/chat', async (req, res) => {
 🧑‍💻 About the Developer:
 - Shwetal Talavdekar is a passionate and versatile Full Stack Developer based in Navi Mumbai, India.
 - He is currently working as a Software Developer at IDBI Intech (since July 2024), contributing to mission-critical financial applications.
-- He was born on 18th May 2000.
+- He was born on 18th May 2000, His age is 25 years.
 💼 Experience & Contributions:
 - Developed a secure transaction processing module for MPSeDC using Java, JSP, and Servlets.
 - Designed and implemented SFTP and SMTP-based API integrations for mandate registration with NPCI.
