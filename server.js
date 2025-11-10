@@ -80,7 +80,7 @@ app.post('/api/chat', async (req, res) => {
 Keep your replies short, casual, and friendly (around 20–30 words).`;
 
     const detailedPrompt = `You are Gemini AI assistant for Shwetal Talavdekar’s portfolio website.
-Provide well-explained, structured, and detailed responses  .
+Provide well-explained, structured, and detailed responses.
 Be professional, informative, and accurate.`;
 
     // 🧠 Developer system context
@@ -106,13 +106,13 @@ Email: shwetalt856@gmail.com
     // 📦 Gemini API body
     const body = {
       contents: [
-        { role: 'system', parts: [{ text: developerSystemText }] },
-        { role: 'user', parts: [{ text: message }] },
+        { role: 'user', parts: [{ text: developerSystemText + '\n\nUser: ' + message }] },
       ],
     };
 
-    const geminiURL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${GEMINI_API_KEY}`;
-    log.info(`🌐 Sending request to Gemini API...`);
+    // ✅ Updated Gemini 2.0 Flash endpoint
+    const geminiURL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GEMINI_API_KEY}`;
+    log.info(`🌐 Sending request to Gemini 2.0 API...`);
 
     const response = await fetch(geminiURL, {
       method: 'POST',
