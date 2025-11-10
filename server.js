@@ -47,7 +47,6 @@ app.post('/api/send-email', async (req, res) => {
 `;
 
   try {
-    // ✅ Base styles for both emails
     const baseStyle = `
       font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
       color: #333;
@@ -71,56 +70,28 @@ app.post('/api/send-email', async (req, res) => {
       font-weight: bold;
     `;
 
-    // 📤 Send to Admin (you)
-    await resend.emails.send({
-      from: `Portfolio Contact <onboarding@resend.dev>`,
-      to: process.env.ADMIN_EMAIL,
-      cc: "shwetal.talavdekar18@gmail.com", // ✅ CC to you
-      subject: `📩 New Portfolio Inquiry: ${subject}`,
-      html: `
-        <div style="${baseStyle}">
-          <h2 style="color:#4682A9;">🚀 New Contact Request</h2>
-          <p>You’ve received a new message via your portfolio website.</p>
-          <hr style="border:none; border-top:1px solid #e0e0e0; margin:15px 0;" />
-          <p><strong>👤 Name:</strong> ${name}</p>
-          <p><strong>📧 Email:</strong> <a href="mailto:${email}">${email}</a></p>
-          <p><strong>📌 Subject:</strong> ${subject}</p>
-          <p><strong>📝 Message:</strong></p>
-          <blockquote style="background:#f1f6fb; padding:10px 15px; border-left:4px solid #91C8E4; border-radius:6px;">
-            ${message}
-          </blockquote>
-          <p><strong>🖥️ Device Info:</strong></p>
-          <pre style="background:#f7f9fc; padding:10px; border-radius:8px; color:#555;">${deviceInfoText}</pre>
-          <br/>
-          <p style="font-size:13px; color:#777;">Sent from your portfolio contact form</p>
-        </div>
-      `,
-    });
-
-    // 📤 Confirmation Email to User
+    // ✅ Send formatted email to the user
     await resend.emails.send({
       from: `Shwetal Talavdekar <onboarding@resend.dev>`,
-      to: email,
-      cc: "shwetal.talavdekar18@gmail.com", // ✅ CC copy for your reference
+      to: email, // 📨 Send directly to the email from frontend
+      cc: "shwetal.talavdekar18@gmail.com", // ✅ CC to you for record
       subject: `Thanks for contacting me, ${name}! 🌟`,
       html: `
         <div style="${baseStyle}">
           <h2 style="color:#4682A9;">Hi ${name}, 👋</h2>
-          <p>Thanks for reaching out through my portfolio website! I’ve received your message and will get back to you soon.</p>
+          <p>Thank you for reaching out through my portfolio website! I’ve received your message and will get back to you soon.</p>
           
           <h3 style="color:#749BC2;">📄 Your Message Summary</h3>
           <ul style="list-style:none; padding-left:0;">
             <li><strong>📌 Subject:</strong> ${subject}</li>
             <li><strong>💬 Message:</strong> ${message}</li>
-            <li><strong>📧 Email:</strong> ${email}</li>
           </ul>
 
-          <p>If you need to reach me directly, click the button below:</p>
-          <a href="mailto:shwetalt856@gmail.com" style="${buttonStyle}">Email Me</a>
-          
+          <p>If you’d like to contact me directly, click below:</p>
+          <a href="mailto:shwetalt856@gmail.com" style="${buttonStyle}">Reply to Shwetal</a>
+
           <br/><br/>
           <hr style="border:none; border-top:1px solid #e0e0e0; margin:20px 0;" />
-
           <p style="font-size:14px;">
             Best regards,<br/>
             <strong>Shwetal Talavdekar</strong><br/>
@@ -130,17 +101,20 @@ app.post('/api/send-email', async (req, res) => {
             🔗 <a href="https://github.com/Shwetal1805200">GitHub</a> | 
             🔗 <a href="https://linkedin.com/in/shwetal-talavdekar-a1354b139">LinkedIn</a>
           </p>
+
+          <p style="font-size:12px; color:#777; text-align:center;">🖥️ Sent via your portfolio contact form</p>
         </div>
       `,
     });
 
-    log.success(`✅ Emails sent successfully to ${email} (user) and CC to admin.`);
+    log.success(`✅ Email sent successfully to ${email} and CC'd to you.`);
     res.status(200).json({ success: true });
   } catch (err) {
     log.error(`❌ Error sending email: ${err.message}`);
     res.status(500).json({ success: false, error: err.message });
   }
 });
+
 
 
 
