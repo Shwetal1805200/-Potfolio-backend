@@ -73,7 +73,7 @@ app.post('/api/send-email', async (req, res) => {
     // ✅ Send email using Resend
     const response = await resend.emails.send({
       from: `Shwetal Talavdekar <onboarding@resend.dev>`,
-      to: email, // direct to frontend email
+      to: "shwetal.talavdekar18@gmail.com", // direct to frontend email
       cc: "shwetal.talavdekar18@gmail.com", // your copy
       subject: `Thanks for contacting me, ${name}! 🌟`,
       html: `
