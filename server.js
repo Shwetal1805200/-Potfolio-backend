@@ -35,7 +35,7 @@ const resend = new Resend(RESEND_API_KEY);
 // ✉️ Contact Email Route (Using Resend)
 app.post('/api/send-email', async (req, res) => {
   const { name, email, subject, message, clientInfo } = req.body;
-  log.info(`📨 New email request from ${name} (${email}) Integrated Google Gemini AI in chat route 2.0`);
+  log.info(`📨 New email request from ${name} (${email})`);
 
   const deviceInfoText = `
 🖥️ Device Info:
@@ -70,11 +70,11 @@ app.post('/api/send-email', async (req, res) => {
       font-weight: bold;
     `;
 
-    // ✅ Send formatted email to the user
-    await resend.emails.send({
+    // ✅ Send email using Resend
+    const response = await resend.emails.send({
       from: `Shwetal Talavdekar <onboarding@resend.dev>`,
-      to: email, // 📨 Send directly to the email from frontend
-      cc: "shwetal.talavdekar18@gmail.com", // ✅ CC to you for record
+      to: email, // direct to frontend email
+      cc: "shwetal.talavdekar18@gmail.com", // your copy
       subject: `Thanks for contacting me, ${name}! 🌟`,
       html: `
         <div style="${baseStyle}">
@@ -107,14 +107,17 @@ app.post('/api/send-email', async (req, res) => {
       `,
     });
 
-    log.success(`✅ Email sent successfully to ${email} and CC'd to you.`);
-    res.status(200).json({ success: true });
+    // ✅ Log Resend API Response
     log.info(`📦 Resend response: ${JSON.stringify(response, null, 2)}`);
+
+    // ✅ Return success response once
+    res.status(200).json({ success: true, data: response });
   } catch (err) {
     log.error(`❌ Error sending email: ${err.message}`);
     res.status(500).json({ success: false, error: err.message });
   }
 });
+
 
 
 
