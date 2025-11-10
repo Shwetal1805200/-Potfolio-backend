@@ -35,7 +35,7 @@ const resend = new Resend(RESEND_API_KEY);
 // ✉️ Contact Email Route (Using Resend)
 app.post('/api/send-email', async (req, res) => {
   const { name, email, subject, message, clientInfo } = req.body;
-  log.info(`📨 New email request from ${name} (${email})`);
+  log.info(`📨 New email request from ${name} (${email}) Integrated Google Gemini AI in chat route 2.0`);
 
   const deviceInfoText = `
 🖥️ Device Info:
