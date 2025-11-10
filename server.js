@@ -54,26 +54,13 @@ app.post('/api/send-email', async (req, res) => {
   }
 });
 
-// 🤖 Chatbot Route
+// 🤖 Chatbot Route (using Google Gemini API)
 app.post('/api/chat', async (req, res) => {
   const { message } = req.body;
 
   try {
-    const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${process.env.OPENROUTER_API_KEY}`,
-        'Content-Type': 'application/json',
-        'HTTP-Referer': 'https://shwetal-t.netlify.app/',
-        'X-Title': 'ShwetalPortfolioAI'
-      },
-      body: JSON.stringify({
-        model: 'mistralai/mistral-7b-instruct',
-        messages: [
-          {
-            role: 'system',
-            content: `You are a friendly and helpful AI chatbot integrated into the personal portfolio of Shwetal Talavdekar.
-  Keep your answers short and relevant (max 20-25 words).
+    const systemPrompt = `You are a friendly and helpful AI chatbot integrated into the personal portfolio of Shwetal Talavdekar.
+Keep your answers short and relevant (max 20-25 words).
 
 🧑‍💻 About the Developer:
 - Shwetal Talavdekar is a passionate and versatile Full Stack Developer based in Navi Mumbai, India.
@@ -120,21 +107,30 @@ app.post('/api/chat', async (req, res) => {
 - If the user asks about Shwetal or his projects, respond using this info confidently.
 - If they ask general programming or tech questions, answer as a friendly assistant.
 - Never invent details not provided in this context.
-- Keep your tone helpful, respectful, and professional.`
-          }
-          ,
-          {
-            role: 'user',
-            content: message
-          }
-        ]
-      })
-    });
+- Keep your tone helpful, respectful, and professional.`;
+
+    const response = await fetch(
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${process.env.GEMINI_API_KEY}`,
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          contents: [
+            {
+              role: 'user',
+              parts: [{ text: systemPrompt + '\n\nUser: ' + message }]
+            }
+          ]
+        })
+      }
+    );
 
     const data = await response.json();
-    const aiMessage = data?.choices?.[0]?.message?.content || 'Sorry, no reply from AI.';
-    res.json({ reply: aiMessage });
+    const aiMessage =
+      data?.candidates?.[0]?.content?.parts?.[0]?.text ||
+      'Sorry, no reply from AI.';
 
+    res.json({ reply: aiMessage });
   } catch (err) {
     console.error('❌ AI Error:', err);
     res.status(500).json({ error: 'AI backend error' });
@@ -143,4 +139,4 @@ app.post('/api/chat', async (req, res) => {
 
 app.listen(PORT, () => {
   console.log(`🚀 Server running on port ${PORT}`);
-});  
+});
