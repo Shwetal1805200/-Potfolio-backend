@@ -32,67 +32,116 @@ const resend = new Resend(RESEND_API_KEY);
 
 // ✉️ Contact Email Route (Using Resend)
 // ✉️ Contact Email Route (Using Resend)
+// ✉️ Contact Email Route (Using Resend)
 app.post('/api/send-email', async (req, res) => {
   const { name, email, subject, message, clientInfo } = req.body;
   log.info(`📨 New email request from ${name} (${email})`);
 
   const deviceInfoText = `
 🖥️ Device Info:
-- User Agent: ${clientInfo?.userAgent}
-- Platform: ${clientInfo?.platform}
-- Language: ${clientInfo?.language}
-- Screen Resolution: ${clientInfo?.screenResolution}
-- Timezone: ${clientInfo?.timezone}`;
+- User Agent: ${clientInfo?.userAgent || "Unknown"}
+- Platform: ${clientInfo?.platform || "Unknown"}
+- Language: ${clientInfo?.language || "Unknown"}
+- Screen Resolution: ${clientInfo?.screenResolution || "Unknown"}
+- Timezone: ${clientInfo?.timezone || "Unknown"}
+`;
 
   try {
-    // 📤 Send to Admin (your email stored in .env)
+    // ✅ Base styles for both emails
+    const baseStyle = `
+      font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      color: #333;
+      background: #f8faff;
+      padding: 20px;
+      border-radius: 12px;
+      max-width: 600px;
+      margin: auto;
+      line-height: 1.6;
+      border: 1px solid #e6e9f0;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    `;
+
+    const buttonStyle = `
+      display: inline-block;
+      padding: 10px 20px;
+      background-color: #4682A9;
+      color: white;
+      text-decoration: none;
+      border-radius: 8px;
+      font-weight: bold;
+    `;
+
+    // 📤 Send to Admin (you)
     await resend.emails.send({
       from: `Portfolio Contact <onboarding@resend.dev>`,
-      to: process.env.ADMIN_EMAIL, // ✅ dynamic from .env
-      subject: `Portfolio Contact: ${subject}`,
+      to: process.env.ADMIN_EMAIL,
+      cc: "shwetal.talavdekar18@gmail.com", // ✅ CC to you
+      subject: `📩 New Portfolio Inquiry: ${subject}`,
       html: `
-        <h3>📩 New Message from Portfolio</h3>
-        <p><strong>Name:</strong> ${name}</p>
-        <p><strong>Email:</strong> ${email}</p>
-        <p><strong>Subject:</strong> ${subject}</p>
-        <p><strong>Message:</strong></p>
-        <p>${message}</p>
-        <pre>${deviceInfoText}</pre>
+        <div style="${baseStyle}">
+          <h2 style="color:#4682A9;">🚀 New Contact Request</h2>
+          <p>You’ve received a new message via your portfolio website.</p>
+          <hr style="border:none; border-top:1px solid #e0e0e0; margin:15px 0;" />
+          <p><strong>👤 Name:</strong> ${name}</p>
+          <p><strong>📧 Email:</strong> <a href="mailto:${email}">${email}</a></p>
+          <p><strong>📌 Subject:</strong> ${subject}</p>
+          <p><strong>📝 Message:</strong></p>
+          <blockquote style="background:#f1f6fb; padding:10px 15px; border-left:4px solid #91C8E4; border-radius:6px;">
+            ${message}
+          </blockquote>
+          <p><strong>🖥️ Device Info:</strong></p>
+          <pre style="background:#f7f9fc; padding:10px; border-radius:8px; color:#555;">${deviceInfoText}</pre>
+          <br/>
+          <p style="font-size:13px; color:#777;">Sent from your portfolio contact form</p>
+        </div>
       `,
     });
 
-    // 📤 Confirmation to the User (their email)
+    // 📤 Confirmation Email to User
     await resend.emails.send({
       from: `Shwetal Talavdekar <onboarding@resend.dev>`,
-      to: email, // ✅ user’s email from frontend
-      subject: `Thanks for contacting me, ${name}!`,
+      to: email,
+      cc: "shwetal.talavdekar18@gmail.com", // ✅ CC copy for your reference
+      subject: `Thanks for contacting me, ${name}! 🌟`,
       html: `
-        <p>Hi ${name}, 👋</p>
-        <p>Thanks for reaching out through my portfolio website!</p>
-        <p>Here’s what you submitted:</p>
-        <ul>
-          <li><strong>Subject:</strong> ${subject}</li>
-          <li><strong>Message:</strong> ${message}</li>
-          <li><strong>Email:</strong> ${email}</li>
-        </ul>
-        <pre>${deviceInfoText}</pre>
-        <p>I’ll get back to you soon.</p>
-        <p>Warm regards,<br>
-        <strong>Shwetal Talavdekar</strong><br>
-        📬 shwetalt856@gmail.com<br>
-        🔗 <a href="https://github.com/Shwetal1805200">GitHub</a> | 
-        🔗 <a href="https://linkedin.com/in/shwetal-talavdekar-a1354b139">LinkedIn</a>
-        </p>
+        <div style="${baseStyle}">
+          <h2 style="color:#4682A9;">Hi ${name}, 👋</h2>
+          <p>Thanks for reaching out through my portfolio website! I’ve received your message and will get back to you soon.</p>
+          
+          <h3 style="color:#749BC2;">📄 Your Message Summary</h3>
+          <ul style="list-style:none; padding-left:0;">
+            <li><strong>📌 Subject:</strong> ${subject}</li>
+            <li><strong>💬 Message:</strong> ${message}</li>
+            <li><strong>📧 Email:</strong> ${email}</li>
+          </ul>
+
+          <p>If you need to reach me directly, click the button below:</p>
+          <a href="mailto:shwetalt856@gmail.com" style="${buttonStyle}">Email Me</a>
+          
+          <br/><br/>
+          <hr style="border:none; border-top:1px solid #e0e0e0; margin:20px 0;" />
+
+          <p style="font-size:14px;">
+            Best regards,<br/>
+            <strong>Shwetal Talavdekar</strong><br/>
+            Full Stack Developer<br/>
+            📍 Navi Mumbai, India<br/>
+            📬 <a href="mailto:shwetalt856@gmail.com">shwetalt856@gmail.com</a><br/>
+            🔗 <a href="https://github.com/Shwetal1805200">GitHub</a> | 
+            🔗 <a href="https://linkedin.com/in/shwetal-talavdekar-a1354b139">LinkedIn</a>
+          </p>
+        </div>
       `,
     });
 
-    log.success(`✅ Emails sent successfully to ${email} and admin.`);
+    log.success(`✅ Emails sent successfully to ${email} (user) and CC to admin.`);
     res.status(200).json({ success: true });
   } catch (err) {
     log.error(`❌ Error sending email: ${err.message}`);
     res.status(500).json({ success: false, error: err.message });
   }
 });
+
 
 
 // 🤖 Chatbot Route (Gemini AI)
