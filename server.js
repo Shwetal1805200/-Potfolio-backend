@@ -68,6 +68,8 @@ app.post('/api/send-email', async (req, res) => {
 });
 
 // 🤖 Chatbot Route (Google Gemini API)
+// 🤖 Chatbot Route (Google Gemini API)
+// 🤖 Chatbot Route (Google Gemini API)
 app.post('/api/chat', async (req, res) => {
   const { message, mode } = req.body;
 
@@ -106,17 +108,24 @@ Email: shwetalt856@gmail.com
     // 📦 Gemini API body
     const body = {
       contents: [
-        { role: 'user', parts: [{ text: developerSystemText + '\n\nUser: ' + message }] },
-      ],
+        {
+          parts: [
+            { text: developerSystemText + '\n\nUser: ' + message }
+          ]
+        }
+      ]
     };
 
-    // ✅ Updated Gemini 2.0 Flash endpoint
+    // ✅ Correct endpoint for Gemini 2.0 Flash
     const geminiURL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GEMINI_API_KEY}`;
     log.info(`🌐 Sending request to Gemini 2.0 API...`);
 
     const response = await fetch(geminiURL, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: {
+        'Content-Type': 'application/json',
+        'X-goog-api-key': GEMINI_API_KEY,
+      },
       body: JSON.stringify(body),
     });
 
@@ -141,6 +150,8 @@ Email: shwetalt856@gmail.com
     res.status(500).json({ error: 'AI backend error' });
   }
 });
+
+
 
 // 🚀 Start Server
 app.listen(PORT, () => {
