@@ -13,7 +13,8 @@
     "dotenv": "^16.6.1",
     "express": "^4.21.2",
     "node-fetch": "^3.3.2",
-    "nodemailer": "^6.9.8"
+    "nodemailer": "^6.9.8",
+    "resend": "^6.4.2"
   },
   "devDependencies": {
     "nodemon": "^3.0.2"
