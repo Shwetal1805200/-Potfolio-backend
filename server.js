@@ -31,6 +31,7 @@ if (!RESEND_API_KEY) log.error("❌ RESEND_API_KEY missing in environment!");
 const resend = new Resend(RESEND_API_KEY);
 
 // ✉️ Contact Email Route (Using Resend)
+// ✉️ Contact Email Route (Using Resend)
 app.post('/api/send-email', async (req, res) => {
   const { name, email, subject, message, clientInfo } = req.body;
   log.info(`📨 New email request from ${name} (${email})`);
@@ -44,10 +45,10 @@ app.post('/api/send-email', async (req, res) => {
 - Timezone: ${clientInfo?.timezone}`;
 
   try {
-    // 📤 Send to Admin
+    // 📤 Send to Admin (your email stored in .env)
     await resend.emails.send({
-      from: 'Portfolio Contact <onboarding@resend.dev>',
-      to: 'shwetal.talavdekar18@gmail.com',
+      from: `Portfolio Contact <onboarding@resend.dev>`,
+      to: process.env.ADMIN_EMAIL, // ✅ dynamic from .env
       subject: `Portfolio Contact: ${subject}`,
       html: `
         <h3>📩 New Message from Portfolio</h3>
@@ -60,10 +61,10 @@ app.post('/api/send-email', async (req, res) => {
       `,
     });
 
-    // 📤 Confirmation to User
+    // 📤 Confirmation to the User (their email)
     await resend.emails.send({
-      from: 'Shwetal Talavdekar <onboarding@resend.dev>',
-      to: email,
+      from: `Shwetal Talavdekar <onboarding@resend.dev>`,
+      to: email, // ✅ user’s email from frontend
       subject: `Thanks for contacting me, ${name}!`,
       html: `
         <p>Hi ${name}, 👋</p>
@@ -92,6 +93,7 @@ app.post('/api/send-email', async (req, res) => {
     res.status(500).json({ success: false, error: err.message });
   }
 });
+
 
 // 🤖 Chatbot Route (Gemini AI)
 app.post('/api/chat', async (req, res) => {
