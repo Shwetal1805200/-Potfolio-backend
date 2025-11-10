@@ -109,6 +109,7 @@ app.post('/api/send-email', async (req, res) => {
 
     log.success(`✅ Email sent successfully to ${email} and CC'd to you.`);
     res.status(200).json({ success: true });
+    log.info(`📦 Resend response: ${JSON.stringify(response, null, 2)}`);
   } catch (err) {
     log.error(`❌ Error sending email: ${err.message}`);
     res.status(500).json({ success: false, error: err.message });
